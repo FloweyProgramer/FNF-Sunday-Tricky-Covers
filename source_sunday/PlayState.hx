@@ -129,6 +129,7 @@ class PlayState extends MusicBeatState
 
 	public static var dad:Character;
 	public static var gf:Character;
+	public static var sundayChar:Character;
 	public static var boyfriend:Boyfriend;
 	public var winY:UInt;
 
@@ -169,6 +170,7 @@ class PlayState extends MusicBeatState
 	private var songPositionBar:Float = 0;
 	
 	private var generatedMusic:Bool = false;
+	var sundayswitch:Bool = false;
 	private var startingSong:Bool = false;
 
 	public var iconP1:HealthIcon;
@@ -925,6 +927,8 @@ class PlayState extends MusicBeatState
 		gf = new Character(400, 130, curGf);
 		gf.scrollFactor.set(0.95, 0.95);
 
+		sundayChar = new Character(450, 50, 'sunday-guitar');
+
 		dad = new Character(100, 100, SONG.player2);
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
@@ -1002,7 +1006,15 @@ class PlayState extends MusicBeatState
 				gf.y = -800;
 				dad.x = 120;
 				dad.y = 182;
-				camPos.set(dad.getGraphicMidpoint().x + 200, dad.getGraphicMidpoint().y+20);
+				
+				if (SONG.player2 == 'tricky'){
+					dad.y -= 200;
+					camPos.set(dad.getGraphicMidpoint().x + 200, boyfriend.getMidpoint().y - 200);
+				}
+				else
+					camPos.set(dad.getGraphicMidpoint().x + 200, dad.getGraphicMidpoint().y+20);
+						
+				
 				
 				
 			case 'schoolEvil':
@@ -1030,6 +1042,7 @@ class PlayState extends MusicBeatState
 			if (curStage == 'limo')
 				add(limo);
 
+			add(sundayChar);
 			add(dad);
 			add(boyfriend);
 		}
@@ -2771,29 +2784,43 @@ class PlayState extends MusicBeatState
 							camZooming = true;
 
 						dad.altAnim = "";
-	
+						
 						if (SONG.notes[Math.floor(curStep / 16)] != null)
 						{
 							if (SONG.notes[Math.floor(curStep / 16)].altAnim){
 								dad.altAnim = '-alt';
-								if (SONG.song.toLowerCase() == 'marx' && !guitarModNOW && PlayStateChangeables.guitarEnabled) changeToGuitar();
+								
+								if (SONG.song.toLowerCase() == 'marx' && !guitarModNOW && PlayStateChangeables.guitarEnabled) {changeToGuitar(); sundayswitch = true;};
 							}else{
-								if (SONG.song.toLowerCase() == 'marx' && guitarModNOW && PlayStateChangeables.guitarEnabled) changeToSing();
+								if (SONG.song.toLowerCase() == 'marx' && guitarModNOW && PlayStateChangeables.guitarEnabled) {changeToSing(); sundayswitch = false;};
 							}
 						}
-	
-						switch (Math.abs(daNote.noteData))
-						{
-							case 2:
-								dad.playAnim('singUP' + dad.altAnim, true);
-							case 3:
-								dad.playAnim('singRIGHT' + dad.altAnim, true);
-							case 1:
-								dad.playAnim('singDOWN' + dad.altAnim, true);
-							case 0:
-								dad.playAnim('singLEFT' + dad.altAnim, true);
+						if (!sundayswitch){
+								switch (Math.abs(daNote.noteData))
+								{
+									case 2:
+										dad.playAnim('singUP' + dad.altAnim, true);
+									case 3:
+										dad.playAnim('singRIGHT' + dad.altAnim, true);
+									case 1:
+										dad.playAnim('singDOWN' + dad.altAnim, true);
+									case 0:
+										dad.playAnim('singLEFT' + dad.altAnim, true);
+								}
 						}
-						
+						else {
+							switch (Math.abs(daNote.noteData))
+								{
+									case 2:
+										sundayChar.playAnim('singUP' + dad.altAnim, true);
+									case 3:
+										sundayChar.playAnim('singRIGHT' + dad.altAnim, true);
+									case 1:
+										sundayChar.playAnim('singDOWN' + dad.altAnim, true);
+									case 0:
+										sundayChar.playAnim('singLEFT' + dad.altAnim, true);
+								}
+						}
 						if (FlxG.save.data.cpuStrums)
 						{
 							cpuStrums.forEach(function(spr:FlxSprite)

@@ -27,7 +27,6 @@ class OptionsMenu extends MusicBeatState
 
 	public var acceptInput:Bool = true;
 
-	public static var instance:OptionsMenu;
 
 	var options:Array<OptionCatagory> = [
 		new OptionCatagory("Gameplay", [
@@ -76,7 +75,6 @@ class OptionsMenu extends MusicBeatState
 	private var currentDescription:String = "";
 	private var grpControls:FlxTypedGroup<Alphabet>;
 	public static var versionShit:FlxText;
-	public var acceptInput:Bool = true;
 
 
 	var currentSelectedCat:OptionCatagory;
